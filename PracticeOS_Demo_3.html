@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>PracticeOS — Demo</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#ffffff;--bg2:#f5f7fa;--bg3:#eef0f5;
+  --text:#1a1a1a;--text2:#666;--text3:#999;
+  --border:#e0e2e8;--border2:#c8cad4;
+  --blue:#185FA5;--blue-light:#E6F1FB;
+  --red:#E24B4A;--red-light:#FCEBEB;
+  --amber:#EF9F27;--amber-light:#FAEEDA;
+  --green:#639922;--green-light:#EAF3DE;
+  --purple:#534AB7;--purple-light:#EEEDFE;
+  --teal:#0F6E56;--teal-light:#E1F5EE;
+  --coral:#993C1D;--coral-light:#FAECE7;
+  --radius:10px;--radius-sm:7px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Arial,sans-serif;background:#e8eaf0;min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:20px;}
+
+/* ── DESKTOP LAYOUT ── */
+.desktop-wrap{display:flex;gap:24px;align-items:flex-start;width:100%;max-width:1060px;}
+.desktop-frame{flex:1;background:var(--bg);border-radius:16px;overflow:hidden;box-shadow:0 4px 24px rgba(0,0,0,0.10);display:flex;height:620px;min-width:0;}
+
+/* ── MOBILE FRAME ── */
+.mobile-outer{flex-shrink:0;width:300px;}
+.mobile-label{text-align:center;font-size:12px;color:#888;margin-bottom:8px;font-weight:500;letter-spacing:0.04em;}
+.phone-frame{background:#1a1a2e;border-radius:40px;padding:10px;box-shadow:0 8px 32px rgba(0,0,0,0.28);}
+.phone-notch{background:#1a1a2e;height:28px;display:flex;align-items:center;justify-content:center;margin-bottom:4px;}
+.phone-notch-pill{width:80px;height:10px;background:#000;border-radius:8px;}
+.phone-screen{background:var(--bg);border-radius:28px;overflow:hidden;height:560px;display:flex;flex-direction:column;}
+.phone-status{background:var(--bg2);padding:6px 16px;display:flex;justify-content:space-between;font-size:10px;color:var(--text2);flex-shrink:0;}
+.phone-content{flex:1;overflow-y:auto;display:flex;flex-direction:column;}
+
+/* ── SIDEBAR ── */
+.sidebar{width:190px;min-width:190px;background:var(--bg2);border-right:0.5px solid var(--border);display:flex;flex-direction:column;padding:14px 0;}
+.logo{padding:0 14px 12px;border-bottom:0.5px solid var(--border);margin-bottom:6px;}
+.logo-name{font-size:15px;font-weight:600;color:var(--text);}
+.logo-sub{font-size:11px;color:var(--text2);}
+.nav-section{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);padding:10px 14px 3px;}
+.nav-item{display:flex;align-items:center;gap:9px;padding:8px 14px;font-size:13px;cursor:pointer;color:var(--text2);border-left:2px solid transparent;transition:all 0.12s;}
+.nav-item:hover{background:var(--bg);color:var(--text);}
+.nav-item.active{color:var(--blue);border-left-color:var(--blue);background:var(--bg);font-weight:500;}
+.nav-item i{font-size:15px;}
+
+/* ── MAIN ── */
+.main{flex:1;display:flex;flex-direction:column;min-width:0;}
+.topbar{padding:11px 16px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.topbar-title{font-size:14px;font-weight:600;color:var(--text);}
+.topbar-date{font-size:11px;color:var(--text2);}
+.content{padding:16px;flex:1;overflow-y:auto;}
+.screen{display:none;}
+.screen.active{display:block;}
+
+/* ── MOBILE NAV ── */
+.mobile-nav{display:flex;border-top:0.5px solid var(--border);background:var(--bg);flex-shrink:0;}
+.mnav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:7px 4px 6px;cursor:pointer;color:var(--text3);font-size:9px;gap:3px;border:none;background:none;transition:color 0.12s;}
+.mnav-item i{font-size:18px;}
+.mnav-item.active{color:var(--blue);}
+
+/* ── SHARED COMPONENTS ── */
+.section-label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);margin-bottom:8px;}
+.cards-row{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px;}
+.metric-card{background:var(--bg2);border-radius:var(--radius-sm);padding:10px 12px;}
+.metric-label{font-size:10px;color:var(--text2);margin-bottom:3px;}
+.metric-val{font-size:20px;font-weight:600;color:var(--text);}
+.metric-sub{font-size:10px;color:var(--text2);margin-top:1px;}
+.client-list{display:flex;flex-direction:column;gap:6px;}
+.client-row{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:border-color 0.12s;}
+.client-row:hover{border-color:var(--border2);}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0;}
+.av-blue{background:var(--blue-light);color:var(--blue);}
+.av-teal{background:var(--teal-light);color:var(--teal);}
+.av-amber{background:var(--amber-light);color:#854F0B;}
+.av-coral{background:var(--coral-light);color:var(--coral);}
+.av-purple{background:var(--purple-light);color:var(--purple);}
+.client-info{flex:1;min-width:0;}
+.client-name{font-size:12px;font-weight:500;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.client-detail{font-size:10px;color:var(--text2);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.client-time{font-size:11px;color:var(--text2);flex-shrink:0;}
+.badge{display:inline-flex;align-items:center;font-size:9px;padding:2px 6px;border-radius:20px;font-weight:600;white-space:nowrap;}
+.badge-red{background:var(--red-light);color:#A32D2D;}
+.badge-amber{background:var(--amber-light);color:#854F0B;}
+.badge-green{background:var(--green-light);color:#3B6D11;}
+.badge-blue{background:var(--blue-light);color:var(--blue);}
+.badge-purple{background:var(--purple-light);color:var(--purple);}
+.profile-card{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:12px;}
+.profile-header{padding:11px 13px;background:var(--bg2);display:flex;align-items:center;gap:10px;border-bottom:0.5px solid var(--border);}
+.profile-body{padding:11px 13px;}
+.info-row{display:flex;justify-content:space-between;padding:5px 0;border-bottom:0.5px solid var(--border);font-size:11px;}
+.info-row:last-child{border-bottom:none;}
+.info-label{color:var(--text2);}
+.info-val{color:var(--text);font-weight:500;text-align:right;max-width:60%;}
+.flag-box{background:var(--amber-light);border-left:3px solid var(--amber);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:8px 10px;margin-top:8px;font-size:11px;color:#633806;}
+.flag-title{font-weight:600;margin-bottom:2px;font-size:9px;text-transform:uppercase;letter-spacing:.05em;color:#854F0B;}
+.brief-card{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;border-left:3px solid var(--blue);}
+.brief-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.brief-title{font-size:12px;font-weight:500;color:var(--text);}
+.brief-body{font-size:11px;color:var(--text2);line-height:1.6;}
+.brief-body strong{color:var(--text);font-weight:500;}
+.play-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 10px;font-size:11px;border-radius:var(--radius-sm);cursor:pointer;border:0.5px solid var(--blue);background:var(--blue-light);color:var(--blue);transition:all 0.12s;font-family:inherit;white-space:nowrap;flex-shrink:0;}
+.play-btn:hover{background:#B5D4F4;}
+.play-btn.playing{background:var(--blue);color:#fff;}
+.wearable-banner{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:10px 12px;margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.wearable-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--purple-light);display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.wearable-text{flex:1;font-size:11px;color:var(--text2);line-height:1.5;}
+.wearable-text strong{color:var(--text);font-weight:500;}
+.glasses-screen{background:#080814;border-radius:var(--radius);padding:14px 16px;margin-bottom:10px;border:0.5px solid #1e1e2e;position:relative;overflow:hidden;}
+.glasses-screen::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#378ADD 50%,transparent);}
+.glasses-hud{font-size:10px;color:#7ab8f5;font-family:monospace;margin-bottom:6px;display:flex;justify-content:space-between;}
+.glasses-name{font-size:16px;font-weight:600;color:#fff;margin-bottom:3px;}
+.glasses-detail{font-size:11px;color:#9cb8d4;margin-bottom:8px;}
+.glasses-flags{font-size:10px;color:#fac775;background:rgba(250,199,117,0.1);border-radius:6px;padding:5px 8px;margin-bottom:6px;}
+.glasses-actions{font-size:10px;color:#9fe1cb;display:flex;gap:6px;flex-wrap:wrap;}
+.glasses-action{background:rgba(29,158,117,0.12);border:0.5px solid rgba(29,158,117,0.3);border-radius:20px;padding:2px 8px;}
+.glasses-voice-hint{font-size:9px;color:#AFA9EC;background:rgba(83,74,183,0.1);border-radius:6px;padding:4px 8px;margin-top:6px;display:flex;align-items:center;gap:5px;}
+.voice-box{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;}
+.voice-controls{display:flex;align-items:center;gap:10px;margin-bottom:8px;}
+.mic-btn{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;border:0.5px solid var(--border2);background:var(--bg);cursor:pointer;transition:all 0.18s;font-size:16px;color:var(--text2);flex-shrink:0;}
+.mic-btn.recording{background:var(--red-light);border-color:var(--red);color:var(--red);animation:pulse 1s infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);}50%{transform:scale(1.08);}}
+.voice-status{font-size:11px;color:var(--text2);}
+.voice-status.active{color:var(--red);font-weight:500;}
+.transcript-box{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 11px;font-size:11px;color:var(--text);min-height:64px;line-height:1.6;}
+.cursor{display:inline-block;width:2px;height:11px;background:var(--blue);margin-left:2px;animation:blink 1s infinite;vertical-align:middle;}
+@keyframes blink{0%,100%{opacity:1;}50%{opacity:0;}}
+.ai-box{background:var(--bg2);border-radius:var(--radius);padding:12px 14px;margin-bottom:12px;}
+.ai-label{font-size:10px;color:var(--text2);margin-bottom:6px;}
+.ai-input{width:100%;background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:7px 9px;font-size:11px;color:var(--text);min-height:60px;resize:none;font-family:inherit;}
+.ai-output{background:var(--bg);border:0.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 12px;font-size:11px;color:var(--text);line-height:1.6;margin-top:8px;}
+.ai-output-label{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--blue);font-weight:600;margin-bottom:5px;}
+.btn-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px;}
+.btn-small{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;font-size:11px;border-radius:var(--radius-sm);cursor:pointer;border:0.5px solid var(--border2);background:var(--bg);color:var(--text);transition:all 0.12s;font-family:inherit;}
+.btn-small:hover{background:var(--bg2);}
+.btn-primary{background:var(--blue);color:#fff;border-color:var(--blue);}
+.btn-primary:hover{background:#0C447C;}
+.tracker-wrap{overflow-x:auto;}
+.tracker-table{width:100%;border-collapse:collapse;font-size:11px;min-width:460px;}
+.tracker-table th{text-align:left;padding:6px 8px;background:var(--bg2);border-bottom:0.5px solid var(--border);font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:var(--text3);font-weight:500;}
+.tracker-table td{padding:7px 8px;border-bottom:0.5px solid var(--border);color:var(--text);vertical-align:middle;}
+.tracker-table tr:last-child td{border-bottom:none;}
+.tracker-table tr:hover td{background:var(--bg2);}
+.divider{border:none;border-top:0.5px solid var(--border);margin:11px 0;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.note-placeholder{font-size:11px;color:var(--text3);padding:8px 0;}
+@media(max-width:700px){
+  body{padding:10px;}
+  .desktop-wrap{flex-direction:column;}
+  .desktop-frame{height:520px;}
+  .mobile-outer{width:100%;max-width:340px;margin:0 auto;}
+}
+</style>
+</head>
+<body>
+<div class="desktop-wrap">
+
+  <!-- DESKTOP APP -->
+  <div class="desktop-frame">
+    <div class="sidebar">
+      <div class="logo">
+        <div class="logo-name">PracticeOS</div>
+        <div class="logo-sub">Freddie's Practice</div>
+      </div>
+      <div class="nav-section">Today</div>
+      <div class="nav-item active" onclick="show('morning','d')" id="d-nav-morning"><i class="ti ti-sun"></i> Morning scan</div>
+      <div class="nav-item" onclick="show('brief','d')" id="d-nav-brief"><i class="ti ti-headphones"></i> Audio brief</div>
+      <div class="nav-item" onclick="show('client','d')" id="d-nav-client"><i class="ti ti-user"></i> Client hub</div>
+      <div class="nav-item" onclick="show('session','d')" id="d-nav-session"><i class="ti ti-microphone"></i> Voice log</div>
+      <div class="nav-section">Team</div>
+      <div class="nav-item" onclick="show('tracker','d')" id="d-nav-tracker"><i class="ti ti-checkbox"></i> Follow-up tracker</div>
+      <div class="nav-item" onclick="show('ai','d')" id="d-nav-ai"><i class="ti ti-robot"></i> AI assistant</div>
+    </div>
+    <div class="main">
+      <div class="topbar">
+        <span class="topbar-title" id="d-title">Morning scan</span>
+        <span class="topbar-date">Fri 13 Jun 2026</span>
+      </div>
+      <div class="content" id="d-content"></div>
+    </div>
+  </div>
+
+  <!-- MOBILE PHONE -->
+  <div class="mobile-outer">
+    <div class="mobile-label">Mobile app</div>
+    <div class="phone-frame">
+      <div class="phone-notch"><div class="phone-notch-pill"></div></div>
+      <div class="phone-screen">
+        <div class="phone-status">
+          <span>9:41</span>
+          <span>PracticeOS</span>
+          <span>▲▲▲ 100%</span>
+        </div>
+        <div style="padding:10px 12px 4px;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;">
+          <span style="font-size:13px;font-weight:600;color:var(--text);" id="m-title">Morning scan</span>
+          <span style="font-size:10px;color:var(--text2);">Fri 13 Jun</span>
+        </div>
+        <div class="phone-content">
+          <div style="padding:10px 12px;flex:1;overflow-y:auto;" id="m-content"></div>
+        </div>
+        <div class="mobile-nav">
+          <button class="mnav-item active" onclick="show('morning','m')" id="m-nav-morning"><i class="ti ti-sun"></i>Today</button>
+          <button class="mnav-item" onclick="show('brief','m')" id="m-nav-brief"><i class="ti ti-headphones"></i>Brief</button>
+          <button class="mnav-item" onclick="show('session','m')" id="m-nav-session"><i class="ti ti-microphone"></i>Voice</button>
+          <button class="mnav-item" onclick="show('tracker','m')" id="m-nav-tracker"><i class="ti ti-checkbox"></i>Tracker</button>
+          <button class="mnav-item" onclick="show('ai','m')" id="m-nav-ai"><i class="ti ti-robot"></i>AI</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const screens=['morning','brief','client','session','tracker','ai'];
+const titles={morning:'Morning scan',brief:'Audio brief',client:'Client hub — John Smith',session:'Voice session log',tracker:'Follow-up tracker',ai:'AI assistant'};
+const mTitles={morning:'Morning scan',brief:'Audio brief',client:'John Smith',session:'Voice log',tracker:'Tracker',ai:'AI assistant'};
+
+const html={
+morning:`
+<div class="cards-row">
+  <div class="metric-card"><div class="metric-label">Clients today</div><div class="metric-val">7</div><div class="metric-sub">Next 9:00 am</div></div>
+  <div class="metric-card"><div class="metric-label">Overdue</div><div class="metric-val" style="color:var(--red);">3</div><div class="metric-sub">Needs action</div></div>
+  <div class="metric-card"><div class="metric-label">Reports</div><div class="metric-val" style="color:var(--amber);">2</div><div class="metric-sub">Due this week</div></div>
+</div>
+<div class="section-label">Today's schedule — tap for brief</div>
+<div class="client-list">
+  <div class="client-row" onclick="show('brief','SELF')"><div class="avatar av-blue">JS</div><div class="client-info"><div class="client-name">John Smith</div><div class="client-detail">Hamstring strain · Session 6</div></div><span class="badge badge-amber" style="margin-right:4px;">Follow-up</span><div class="client-time">9:00</div></div>
+  <div class="client-row" onclick="show('brief','SELF')"><div class="avatar av-teal">AN</div><div class="client-info"><div class="client-name">Amy Nguyen</div><div class="client-detail">Knee pain · Session 3</div></div><span class="badge badge-red" style="margin-right:4px;">Overdue</span><div class="client-time">10:00</div></div>
+  <div class="client-row"><div class="avatar av-purple">MC</div><div class="client-info"><div class="client-name">Marcus Chen</div><div class="client-detail">Lower back · New referral</div></div><span class="badge badge-blue" style="margin-right:4px;">First</span><div class="client-time">11:00</div></div>
+  <div class="client-row"><div class="avatar av-coral">SR</div><div class="client-info"><div class="client-name">Sarah Reynolds</div><div class="client-detail">Rotator cuff · Session 4</div></div><span class="badge badge-green" style="margin-right:4px;">On track</span><div class="client-time">14:00</div></div>
+</div>`,
+
+brief:`
+<div class="section-label">Pre-session brief — John Smith · 9:00 am</div>
+<div class="brief-card">
+  <div class="brief-header">
+    <div style="display:flex;align-items:center;gap:8px;min-width:0;"><div class="avatar av-blue" style="width:28px;height:28px;font-size:10px;flex-shrink:0;">JS</div><div class="brief-title">John Smith — brief</div></div>
+    <button class="play-btn" id="play-btn" onclick="toggleBrief()"><i class="ti ti-player-play" id="play-icon"></i> <span id="play-label">Play</span></button>
+  </div>
+  <div class="brief-body" id="brief-text"><strong>34yo male, recreational runner.</strong> Grade 2 left hamstring strain. Session 6 of 8. Pain 2/10 last session — progressing well. On single-leg bridges. <strong>Goal: return to run 1 Aug.</strong><br><br><strong>Flag:</strong> MRI report not sent to Dr. Patel — high priority today. Refer to sports medicine if no improvement by session 8.<br><br><strong>Exercise app:</strong> Program last updated 2 Jun. Check home exercise compliance.</div>
+</div>
+<div class="wearable-banner">
+  <div class="wearable-icon"><i class="ti ti-device-glasses" style="font-size:16px;color:var(--purple);"></i></div>
+  <div class="wearable-text"><strong>AirPods / smart glasses</strong> — tap Play to hear brief via text-to-speech. Works hands-free between clients.</div>
+  <button class="play-btn" onclick="toggleHUD()" style="flex-shrink:0;"><i class="ti ti-device-glasses"></i> HUD</button>
+</div>
+<div id="hud-view" style="display:none;">
+  <div class="glasses-screen">
+    <div class="glasses-hud"><span>PracticeOS</span><span id="hud-clock">09:52</span></div>
+    <div class="glasses-name">John Smith</div>
+    <div class="glasses-detail">Session 6 · Hamstring (L) Grade 2 · Run goal: Aug 1</div>
+    <div class="glasses-flags"><i class="ti ti-alert-triangle" style="font-size:11px;vertical-align:-1px;"></i> MRI report not sent to Dr. Patel — action today</div>
+    <div class="glasses-actions"><div class="glasses-action">Pain: 2/10</div><div class="glasses-action">Medibank</div><div class="glasses-action">Home ex: check</div></div>
+    <div class="glasses-voice-hint"><i class="ti ti-microphone" style="font-size:11px;"></i> Say "next client" or "log session"</div>
+  </div>
+  <div style="font-size:10px;color:var(--text3);line-height:1.5;">Smart glasses and video analysis require patient consent under the Australian Privacy Act. Consent framework to be confirmed with legal counsel.</div>
+</div>
+<div class="btn-row">
+  <button class="btn-small" onclick="show('session','SELF')"><i class="ti ti-microphone"></i> Voice log</button>
+  <button class="btn-small" onclick="show('client','SELF')"><i class="ti ti-user"></i> Full profile</button>
+</div>`,
+
+client:`
+<div class="section-label">Client hub — John Smith</div>
+<div class="profile-card">
+  <div class="profile-header">
+    <div class="avatar av-blue" style="width:38px;height:38px;font-size:13px;">JS</div>
+    <div style="flex:1;min-width:0;"><div style="font-size:13px;font-weight:600;color:var(--text);">John Smith</div><div style="font-size:10px;color:var(--text2);">DOB: 12 Mar 1990 · Recreational runner</div></div>
+    <span class="badge badge-amber">Session 6/8</span>
+  </div>
+  <div class="profile-body">
+    <div class="info-row"><span class="info-label">Diagnosis</span><span class="info-val">Grade 2 hamstring strain, L</span></div>
+    <div class="info-row"><span class="info-label">Referring GP</span><span class="info-val">Dr. Patel — Ryde Medical</span></div>
+    <div class="info-row"><span class="info-label">Private health</span><span class="info-val">Medibank ✓</span></div>
+    <div class="info-row"><span class="info-label">Exercise app</span><span class="info-val"><span class="badge badge-purple">Pending</span></span></div>
+    <div class="info-row"><span class="info-label">Last session</span><span class="info-val">6 Jun — progressing well</span></div>
+    <div class="info-row"><span class="info-label">Goal</span><span class="info-val">Return to run 1 Aug 2026</span></div>
+    <div class="flag-box"><div class="flag-title">Flags</div>MRI report not sent to Dr. Patel. Refer to sports medicine if no improvement by session 8.</div>
+  </div>
+</div>
+<div class="two-col"><button class="btn-small" onclick="show('session','SELF')"><i class="ti ti-microphone"></i> Voice log</button><button class="btn-small" onclick="show('ai','SELF')"><i class="ti ti-robot"></i> Draft email</button></div>`,
+
+session:`
+<div class="section-label">Voice log — John Smith · 13 Jun 2026</div>
+<div class="voice-box">
+  <div class="voice-controls">
+    <button class="mic-btn" id="mic-btn" onclick="toggleMic()" aria-label="Toggle recording"><i class="ti ti-microphone" id="mic-icon"></i></button>
+    <div><div class="voice-status" id="voice-status">Tap mic to dictate</div><div style="font-size:10px;color:var(--text3);margin-top:1px;">Works with AirPods — say "done" to stop</div></div>
+    <div style="margin-left:auto;font-size:10px;color:var(--text3);" id="rec-timer"></div>
+  </div>
+  <div class="transcript-box" id="transcript">Your dictation will appear here...</div>
+</div>
+<div class="section-label">AI summary</div>
+<div id="summary-placeholder" class="note-placeholder">Dictate session notes above — a summary and action list will be generated automatically.</div>
+<div class="ai-output" id="summary-out" style="display:none;"><div class="ai-output-label">Auto-summary</div><div id="summary-text"></div></div>
+<div class="divider"></div>
+<div class="btn-row">
+  <button class="btn-small btn-primary" onclick="generateSummary()"><i class="ti ti-wand"></i> Generate summary</button>
+  <button class="btn-small" onclick="show('tracker','SELF')"><i class="ti ti-checkbox"></i> Add to tracker</button>
+  <button class="btn-small" onclick="show('ai','SELF')"><i class="ti ti-robot"></i> Draft report</button>
+</div>`,
+
+tracker:`
+<div class="section-label">Team follow-up tracker</div>
+<div class="cards-row">
+  <div class="metric-card"><div class="metric-label">Open</div><div class="metric-val">11</div></div>
+  <div class="metric-card"><div class="metric-label">Overdue</div><div class="metric-val" style="color:var(--red);">3</div></div>
+  <div class="metric-card"><div class="metric-label">Due today</div><div class="metric-val" style="color:var(--amber);">2</div></div>
+</div>
+<div class="tracker-wrap"><table class="tracker-table">
+  <thead><tr><th>Client</th><th>Action</th><th>Due</th><th>Pri</th><th>✓</th></tr></thead>
+  <tbody>
+    <tr><td><strong>Smith, J</strong></td><td>Send MRI to Dr. Patel</td><td style="color:var(--red);">11 Jun</td><td><span class="badge badge-red">High</span></td><td><input type="checkbox"></td></tr>
+    <tr><td><strong>Nguyen, A</strong></td><td>Insurer progress report</td><td style="color:var(--red);">12 Jun</td><td><span class="badge badge-red">High</span></td><td><input type="checkbox"></td></tr>
+    <tr><td><strong>Reynolds, S</strong></td><td>Follow-up call</td><td>16 Jun</td><td><span class="badge badge-amber">Med</span></td><td><input type="checkbox"></td></tr>
+    <tr><td><strong>Chen, M</strong></td><td>Send intake form</td><td>13 Jun</td><td><span class="badge badge-amber">Med</span></td><td><input type="checkbox"></td></tr>
+    <tr><td><strong>Thompson, L</strong></td><td>Specialist referral</td><td>20 Jun</td><td><span class="badge badge-green">Low</span></td><td><input type="checkbox" checked></td></tr>
+  </tbody>
+</table></div>`,
+
+ai:`
+<div class="section-label">AI assistant — Claude</div>
+<div class="ai-box">
+  <div class="ai-label">Describe what you need or paste voice log</div>
+  <textarea class="ai-input" id="ai-prompt">Write a GP referral email to Dr. Patel for John Smith. Grade 2 hamstring strain, session 6 of 8, progressing well. Requesting MRI report review. Suggest sports medicine referral if no improvement by session 8.</textarea>
+  <div class="btn-row"><button class="btn-small btn-primary" onclick="generateDraft()"><i class="ti ti-robot"></i> Generate draft</button><button class="btn-small" onclick="show('session','SELF')"><i class="ti ti-microphone"></i> Use voice</button></div>
+</div>
+<div class="ai-output" id="ai-output" style="display:none;"><div class="ai-output-label">Draft — review before sending</div><div id="ai-text"></div></div>`
+};
+
+let currentMode='d';
+
+function show(id, mode){
+  if(mode==='SELF') mode=currentMode;
+  currentMode=mode;
+  const prefix = mode==='d'?'d':'m';
+  screens.forEach(s=>{
+    const nav=document.getElementById(prefix+'-nav-'+s);
+    if(nav) nav.classList.toggle('active',s===id);
+  });
+  if(mode==='d'){
+    document.getElementById('d-title').textContent=titles[id]||id;
+    document.getElementById('d-content').innerHTML=html[id]||'';
+    // sync mobile too
+    screens.forEach(s=>{const n=document.getElementById('m-nav-'+s);if(n)n.classList.toggle('active',s===id);});
+    document.getElementById('m-title').textContent=mTitles[id]||id;
+    document.getElementById('m-content').innerHTML=html[id]||'';
+  } else {
+    document.getElementById('m-title').textContent=mTitles[id]||id;
+    document.getElementById('m-content').innerHTML=html[id]||'';
+    screens.forEach(s=>{const n=document.getElementById('d-nav-'+s);if(n)n.classList.toggle('active',s===id);});
+    document.getElementById('d-title').textContent=titles[id]||id;
+    document.getElementById('d-content').innerHTML=html[id]||'';
+  }
+  bindEvents();
+}
+
+function bindEvents(){
+  const pb=document.getElementById('play-btn');
+  if(pb) pb.onclick=toggleBrief;
+  const mb=document.getElementById('mic-btn');
+  if(mb) mb.onclick=toggleMic;
+  const hc=document.getElementById('hud-clock');
+  if(hc){const n=new Date();hc.textContent=n.getHours()+':'+(n.getMinutes()<10?'0':'')+n.getMinutes();}
+}
+
+let briefPlaying=false;
+const briefScript="John Smith. Thirty-four year old male recreational runner. Grade 2 left hamstring strain. Session six of eight. Last session pain was two out of ten — progressing well. Currently on single-leg bridges. Goal: return to running by the first of August. Key flag: MRI report has not been sent to Doctor Patel — high priority today. If no improvement by session eight, refer to sports medicine. Check home exercise compliance.";
+function toggleBrief(){
+  const btn=document.getElementById('play-btn');
+  const icon=document.getElementById('play-icon');
+  const lbl=document.getElementById('play-label');
+  const txt=document.getElementById('brief-text');
+  if(!btn) return;
+  if(!briefPlaying){
+    briefPlaying=true;btn.classList.add('playing');
+    icon.className='ti ti-player-pause';lbl.textContent='Stop';
+    if('speechSynthesis' in window){window.speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(briefScript);u.rate=0.92;u.onend=stopBrief;window.speechSynthesis.speak(u);}
+    if(txt) txt.style.opacity='0.6';
+  } else stopBrief();
+}
+function stopBrief(){
+  briefPlaying=false;if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  const btn=document.getElementById('play-btn');const icon=document.getElementById('play-icon');const lbl=document.getElementById('play-label');const txt=document.getElementById('brief-text');
+  if(btn){btn.classList.remove('playing');}if(icon) icon.className='ti ti-player-play';if(lbl) lbl.textContent='Play';if(txt) txt.style.opacity='1';
+}
+function toggleHUD(){const h=document.getElementById('hud-view');if(h) h.style.display=h.style.display==='none'?'block':'none';}
+
+let recording=false,recSecs=0,recInt=null,tIdx=0;
+const demoT="Progressed John to single-leg bridges, three sets of twelve. Pain one out of ten by end of session — significant improvement. Client positive about return to run timeline. Need to send MRI report to Doctor Patel today — flag as high priority. Book review in one week. Check home exercise compliance next session.";
+function toggleMic(){
+  const btn=document.getElementById('mic-btn');const icon=document.getElementById('mic-icon');const st=document.getElementById('voice-status');const box=document.getElementById('transcript');const timer=document.getElementById('rec-timer');
+  if(!btn) return;
+  if(!recording){
+    recording=true;tIdx=0;if(box) box.innerHTML='<span class="cursor"></span>';
+    btn.classList.add('recording');if(icon) icon.className='ti ti-player-stop';
+    if(st){st.textContent='Recording...';st.classList.add('active');}
+    recSecs=0;
+    recInt=setInterval(()=>{
+      recSecs++;const m=Math.floor(recSecs/60),s=recSecs%60;
+      if(timer) timer.textContent=m+':'+(s<10?'0':'')+s;
+      if(tIdx<demoT.length){tIdx=Math.min(tIdx+Math.floor(Math.random()*4)+3,demoT.length);if(box) box.innerHTML=demoT.slice(0,tIdx)+'<span class="cursor"></span>';}
+    },100);
+  } else {
+    recording=false;clearInterval(recInt);
+    btn.classList.remove('recording');if(icon) icon.className='ti ti-microphone';
+    if(st){st.textContent='Done — tap to re-record';st.classList.remove('active');}
+    if(box) box.textContent=demoT;if(timer) timer.textContent='';
+  }
+}
+function generateSummary(){
+  const o=document.getElementById('summary-out'),t=document.getElementById('summary-text'),p=document.getElementById('summary-placeholder');
+  if(!o) return;o.style.display='block';if(p) p.style.display='none';if(t) t.innerHTML='';
+  const s='<strong>Session summary — John Smith, 13 Jun</strong><br>Single-leg bridges 3×12. Pain 1/10 — significant improvement. Client positive re: return-to-run.<br><br><strong>Actions:</strong><br>1. Send MRI report to Dr. Patel — HIGH, overdue<br>2. Book review appointment — 1 week<br>3. Check home exercise compliance next session';
+  stream(s,t,25);
+}
+function generateDraft(){
+  const o=document.getElementById('ai-output'),t=document.getElementById('ai-text');
+  if(!o) return;o.style.display='block';if(t) t.innerHTML='';
+  const d='Dear Dr. Patel,<br><br>I am writing regarding <strong>John Smith</strong> (DOB: 12 March 1990), attending physiotherapy for a Grade 2 left hamstring strain.<br><br>John has completed <strong>6 of 8 sessions</strong> with good progress — pain now 1–2/10 and loading well. Return-to-run target remains 1 August 2026.<br><br>Please find the requested <strong>MRI report attached</strong>. If progress plateaus by session 8, I would recommend referral to a sports medicine specialist.<br><br>Kind regards,<br><strong>Freddie</strong><br>[Practice Name] Physiotherapy';
+  stream(d,t,22);
+}
+function stream(s,el,delay){let i=0;const w=s.split(' ');function go(){if(i<w.length){if(el) el.innerHTML=w.slice(0,i+1).join(' ');i++;setTimeout(go,delay);}}go();}
+
+show('morning','d');
+</script>
+</body>
+</html>
